@@ -1,20 +1,15 @@
 package com.example.testTask.dataGif;
 
-import java.util.ArrayList;
-
-public class GifImageBean {
-    private ArrayList<Object> data;
+public class GifBean {
+    private GifObject[] data;
     private Pagination pagination;
     private Meta meta;
 
-    public GifImageBean() {
-    }
-
-    public ArrayList<Object> getData() {
+    public GifObject[] getData() {
         return data;
     }
 
-    public void setData(ArrayList<Object> data) {
+    public void setData(GifObject[] data) {
         this.data = data;
     }
 
@@ -33,4 +28,5 @@ public class GifImageBean {
     public void setMeta(Meta meta) {
         this.meta = meta;
     }
+
 }

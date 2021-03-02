@@ -28,13 +28,4 @@ public class Meta {
     public void setResponse_id(String response_id) {
         this.response_id = response_id;
     }
-
-    public Meta(String msg, Integer status, String response_id) {
-        this.msg = msg;
-        this.status = status;
-        this.response_id = response_id;
-    }
-
-    public Meta() {
-    }
 }

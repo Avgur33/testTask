@@ -1,4 +1,4 @@
-package com.example.testTask;
+package com.example.testTask.dataCurrency;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -9,17 +9,6 @@ public class CurrencyGetObject {
     private BigDecimal timestamp;
     private String base;
     private Map<String,Double> rates;
-
-    public CurrencyGetObject() {
-    }
-
-    public CurrencyGetObject(String disclaimer, String license, BigDecimal timestamp, String base, Map<String, Double> rates) {
-        this.disclaimer = disclaimer;
-        this.license = license;
-        this.timestamp = timestamp;
-        this.base = base;
-        this.rates = rates;
-    }
 
     public String getDisclaimer() {
         return disclaimer;

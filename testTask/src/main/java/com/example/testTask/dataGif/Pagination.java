@@ -5,13 +5,9 @@ public class Pagination {
     private Integer count;
     private Integer offset;
 
-    public Integer getOffset() {
-        return offset;
-    }
+    public Integer getOffset() { return offset; }
 
-    public void setOffset(Integer offset) {
-        this.offset = offset;
-    }
+    public void setOffset(Integer offset) { this.offset = offset; }
 
     public Integer getTotal_count() {
         return total_count;
@@ -27,14 +23,5 @@ public class Pagination {
 
     public void setCount(Integer count) {
         this.count = count;
-    }
-
-    public Pagination(Integer offset, Integer total_count, Integer count) {
-        this.offset = offset;
-        this.total_count = total_count;
-        this.count = count;
-    }
-
-    public Pagination() {
     }
 }

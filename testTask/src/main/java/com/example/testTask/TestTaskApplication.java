@@ -8,9 +8,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableFeignClients("com.example.testTask")
 public class TestTaskApplication {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		SpringApplication.run(TestTaskApplication.class, args);
-	}
+        SpringApplication.run(TestTaskApplication.class, args);
+    }
 
 }

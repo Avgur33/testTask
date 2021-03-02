@@ -1,4 +1,4 @@
-package com.example.testTask;
+package com.example.testTask.dataGif;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "GifClient", url = "${giphy_url}")
+@FeignClient(name = "GifClient", url = "${giphy.url}")
 public interface GetGif {
-    @RequestMapping(method = RequestMethod.GET,value = "/v1/gifs/search")
+    @RequestMapping(method = RequestMethod.GET,value = "${giphy.path}")
     public JsonNode retrieveGif(@RequestParam("api_key")String apy_key,
                                 @RequestParam("q") String q,
                                 @RequestParam("limit")String limit,
