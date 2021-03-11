@@ -1,5 +1,6 @@
 package com.example.testTask.dataGif;
 
+import com.example.testTask.exception.ExternServiceException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,51 +40,59 @@ public class GifApiAccessor {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public String getGifBroke(){
+    public String getGifBroke() throws ExternServiceException {
         return getGif(q_less);
     }
 
-    public String getGifRich(){
+    public String getGifRich() throws ExternServiceException {
         return getGif(q_more);
     }
 
-    private String getGif(String q) {
+    private String getGif(String q) throws ExternServiceException {
         GifBean gifBean;
         ObjectMapper mapper = new ObjectMapper();
         try {
-            JsonNode gifJson = getGifApi.retrieveGif(app_id, q, limit, getRandomNumber(), rating, lang);
+            JsonNode gifJson = getGifApi.retrieveGif(app_id
+                    , q
+                    , limit
+                    , getRandomNumber(minOffset,maxOffset)
+                    , rating
+                    , lang);
+
             gifBean = mapper.treeToValue(gifJson, GifBean.class);
 
             if (gifBean.getPagination().getCount()==0){
-                gifJson = getGifApi.retrieveGif(app_id, q, limit, getRandomNumber(gifBean.getPagination().getTotal_count()-1), rating, lang);
+                gifJson = getGifApi.retrieveGif(app_id
+                        , q
+                        , limit
+                        , getRandomNumber(minOffset, Integer.toString(gifBean.getPagination().getTotal_count()-1))
+                        , rating
+                        , lang);
                 gifBean = mapper.treeToValue(gifJson, GifBean.class);
             }
-
+            //it would be feignException should remove
             if (gifBean.getMeta().getStatus() != 200) {
                 logger.error(gifBean.getMeta().getMsg());
-                return "Can`t get gif";
+                throw new ExternServiceException("gifBean.getMeta().getMsg()");
             }
-        } catch (FeignException | JsonProcessingException e) {
+        } catch (FeignException e) {
             logger.error("Not authorized to get gif", e);
-            return "Not authorized to get gif";
+            throw new ExternServiceException(e.getMessage());
+        } catch (JsonProcessingException e){
+            logger.error("Json parse error", e);
+            throw new ExternServiceException(e.getMessage());
         }
 
         if ( gifBean.getData().length == 0) {
             logger.error("data invalid in response from giphy");
-            return "bad connection try again";
+            throw new ExternServiceException("data invalid in response from giphy");
         }else{
             return String.format(gifSource,gifBean.getData()[0].getId());
         }
     }
-    private String getRandomNumber(Integer max) {
-        int min = Integer.parseInt(minOffset);
-        int res = (int)((Math.random() * (max - min)) + min);
-        return Integer.toString(res);
-    }
-
-    private String getRandomNumber() {
-        int min = Integer.parseInt(minOffset);
-        int max = Integer.parseInt(maxOffset);
+    private String getRandomNumber(String minValue, String maxValue) {
+        int min = Integer.parseInt(minValue);
+        int max = Integer.parseInt(maxValue);
         int res = (int)((Math.random() * (max - min)) + min);
         return Integer.toString(res);
     }

@@ -1,4 +1,4 @@
-package com.example.testTask;
+package com.example.testTask.controller;
 
 import com.example.testTask.dataCurrency.CurrencyApiAccessor;
 import com.example.testTask.dataGif.GifApiAccessor;
@@ -34,16 +34,17 @@ public class TestTaskController {
             return e.getMessage();
         }
 
-        if (todayCurrencyRate > yesterdayCurrencyRate) {
-            gifUrl = gifApi.getGifRich();
-        }else if (todayCurrencyRate < yesterdayCurrencyRate){
-            gifUrl = gifApi.getGifBroke();
-        }else{
-            return "the exchange rate has not changed today";
+        try {
+            if (todayCurrencyRate > yesterdayCurrencyRate) {
+                gifUrl = gifApi.getGifRich();
+            } else if (todayCurrencyRate < yesterdayCurrencyRate) {
+                gifUrl = gifApi.getGifBroke();
+            } else {
+                return "the exchange rate has not changed today";
+            }
+        }catch (ExternServiceException e){
+            return "something wrong, please try again";
         }
-
-        StringBuilder result = new StringBuilder();
-        result.append("<img style=\"-webkit-user-select: none;margin: auto;background-color: hsl(0, 0%, 90%);transition: background-color 300ms;\" src=\"").append(gifUrl).append("\">");
-        return result.toString();
+        return "<img style=\"-webkit-user-select: none;margin: auto;background-color: hsl(0, 0%, 90%);transition: background-color 300ms;\" src=\"" + gifUrl + "\">";
     }
 }
