@@ -39,6 +39,7 @@ public class CurrencyApiAccessor {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.treeToValue(exchangeRate.retrieveValue(path, app_id), CurrencyGetObject.class);
+
         } catch (FeignException e) {
             logger.error("Not authorized to get currency rates in path {}", path, e);
             throw new ExternServiceException("Invalid URL or openexchangerate service fell down");

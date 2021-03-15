@@ -5,7 +5,6 @@ import com.example.testTask.exception.ExternServiceException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -14,11 +13,8 @@ import org.junit.runner.RunWith;
 
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
@@ -42,7 +38,7 @@ class CurrencyApiAccessorTest {
     private final String currentRatePath ="latest.json";
     private final String appId = "87c59f543a1f43d7a462c1d33f02b7dd";
 
-    private String yesterdeyRatePath = "historical/%s.json";
+    private String yesterdayRatePath = "historical/%s.json";
 
     private static JsonNode jsonResponse;
     private static JsonNode historicalResponse;
@@ -98,7 +94,7 @@ class CurrencyApiAccessorTest {
         cal.add(Calendar.DATE, -1);
         Mockito.doReturn(historicalResponse )
                 .when(exchangeRate)
-                .retrieveValue(String.format(yesterdeyRatePath,dateFormat.format(cal.getTime())),appId);
+                .retrieveValue(String.format(yesterdayRatePath,dateFormat.format(cal.getTime())),appId);
 
         double currentRate = currencyApiAccessor.getYesterdayRate("USD");
         Assertions.assertTrue(currentRate > 0 );
