@@ -3,6 +3,7 @@ package com.example.testTask.dataGif;
 import com.example.testTask.exception.ExternServiceException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -33,7 +34,8 @@ class GifApiAccessorTest {
     @BeforeAll
     static void initJsonResponse() throws Exception{
         ObjectMapper mapper = new ObjectMapper();
-        File file = new File("./src/test/java/" + GifApiAccessorTest.class.getPackage().getName().replace(".", "/") + "/gifRichResponse.json");
+        ClassLoader classLoader = GifApiAccessorTest.class.getClassLoader();
+        File file = new File(classLoader.getResource("dataGif/gifRichResponse.json").getFile());
         jsonResponse = mapper.readTree(file);
     }
 
@@ -75,7 +77,10 @@ class GifApiAccessorTest {
     @Test
     void zeroPaginationCount() throws Exception{
         ObjectMapper mapper = new ObjectMapper();
-        File file = new File("./src/test/java/" + GifApiAccessorTest.class.getPackage().getName().replace(".", "/") + "/unvalidResponse.json");
+        ClassLoader classLoader = GifApiAccessorTest.class.getClassLoader();
+        File file = new File(classLoader.getResource("dataGif/unvalidResponse.json").getFile());
+
+
         JsonNode jsonResponse = mapper.readTree(file);
         Mockito.doReturn(jsonResponse )
                 .when(getGifApi)

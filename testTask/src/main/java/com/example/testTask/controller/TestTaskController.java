@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @PropertySource("classpath:application.properties")
 public class TestTaskController {
     @Autowired
-    CurrencyApiAccessor currencyApi;
+    private CurrencyApiAccessor currencyApi;
 
     @Autowired
     private GifApiAccessor gifApi;
@@ -30,8 +30,10 @@ public class TestTaskController {
         try {
             todayCurrencyRate = currencyApi.getCurrentRate(id);
             yesterdayCurrencyRate = currencyApi.getYesterdayRate(id);
-        } catch (IllegalAccessException | ExternServiceException e) {
-            return e.getMessage();
+        } catch (IllegalAccessException e) {
+            return "Illegal Currency Id\n" + e.getMessage();
+        } catch (ExternServiceException e){
+            return "Invalid service\n" + e.getMessage();
         }
 
         try {

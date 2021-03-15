@@ -5,6 +5,7 @@ import com.example.testTask.exception.ExternServiceException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -13,8 +14,11 @@ import org.junit.runner.RunWith;
 
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
@@ -26,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-//@PropertySource("classpath:test-application.properties")
 
 class CurrencyApiAccessorTest {
 
@@ -36,12 +39,10 @@ class CurrencyApiAccessorTest {
     @MockBean
     private ExchangeRate exchangeRate;
 
-    //@Value("${current.rate.path}")
     private final String currentRatePath ="latest.json";
-    //@Value("${openexchangerates.app_id}")
     private final String appId = "87c59f543a1f43d7a462c1d33f02b7dd";
 
-    private final String yesterdayRatePath = "historical/%s.json";
+    private String yesterdeyRatePath = "historical/%s.json";
 
     private static JsonNode jsonResponse;
     private static JsonNode historicalResponse;
@@ -49,8 +50,10 @@ class CurrencyApiAccessorTest {
     @BeforeAll
     static void initJsonResponse() throws Exception{
         ObjectMapper mapper = new ObjectMapper();
-        File file = new File("./src/test/java/" + CurrencyApiAccessorTest.class.getPackage().getName().replace(".", "/") + "/exchangeRateResponse.json");
-        File fileHistorical = new File("./src/test/java/" + CurrencyApiAccessorTest.class.getPackage().getName().replace(".", "/") + "/historicalResponse.json");
+        ClassLoader classLoader = CurrencyApiAccessorTest.class.getClassLoader();
+
+        File file = new File(classLoader.getResource("dataCurrency/exchangeRateResponse.json").getFile());
+        File fileHistorical = new File(classLoader.getResource("dataCurrency/historicalResponse.json").getFile());
         jsonResponse = mapper.readTree(file);
         historicalResponse = mapper.readTree(fileHistorical);
     }
@@ -95,7 +98,7 @@ class CurrencyApiAccessorTest {
         cal.add(Calendar.DATE, -1);
         Mockito.doReturn(historicalResponse )
                 .when(exchangeRate)
-                .retrieveValue(String.format(yesterdayRatePath,dateFormat.format(cal.getTime())),appId);
+                .retrieveValue(String.format(yesterdeyRatePath,dateFormat.format(cal.getTime())),appId);
 
         double currentRate = currencyApiAccessor.getYesterdayRate("USD");
         Assertions.assertTrue(currentRate > 0 );
